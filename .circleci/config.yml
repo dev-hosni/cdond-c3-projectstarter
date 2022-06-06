@@ -48,7 +48,8 @@ jobs:
               npm run build
       - run:
           name: Fail Fast
-          when: on_fail    
+          when: on_fail 
+             exit 1   
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -66,7 +67,10 @@ jobs:
               cd backend
               npm install
               npm run build
-          
+      - run:
+          name: Fail Fast
+          when: on_fail 
+             exit 1    
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -75,5 +79,5 @@ workflows:
   default:
     jobs:
       - build-backend 
-   #   - build-frontend
+   #  - build-frontend
       
