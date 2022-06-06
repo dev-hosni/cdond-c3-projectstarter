@@ -68,7 +68,9 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-          
+      - when: on_fail
+          exit 1
+
 workflows:
   default:
     jobs:
