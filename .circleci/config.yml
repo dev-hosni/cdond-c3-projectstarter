@@ -46,7 +46,9 @@ jobs:
               cd frontend
               npm install
               npm run build
-          
+      - run:
+          name: Fail Fast
+          when: on_fail    
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -73,5 +75,5 @@ workflows:
   default:
     jobs:
       - build-backend 
-      - build-frontend
+   #   - build-frontend
       
