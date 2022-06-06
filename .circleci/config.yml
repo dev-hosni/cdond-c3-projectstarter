@@ -49,6 +49,7 @@ jobs:
       - run:
           name: Fail Fast
           when: on_fail 
+          command:
              exit 1   
       - save_cache:
           paths: [frontend/node_modules]
@@ -70,6 +71,7 @@ jobs:
       - run:
           name: Fail Fast
           when: on_fail 
+          command:
              exit 1    
       - save_cache:
           paths: [backend/node_modules]
