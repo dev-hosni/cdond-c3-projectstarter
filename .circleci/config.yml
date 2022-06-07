@@ -175,6 +175,10 @@ jobs:
             --query  'Reservations[*].Instances[*].PublicIpAddress' \
             --output text)
             echo $BACK_PUBLICIP >> .circleci/ansible/inventory.txt
+            echo $BACK_PUBLICIP >> .circleci/ansible/inventory_temp.txt
+      - store_artifacts:
+          path: .circleci/ansible/inventory_temp.txt
+          destination: artifact-file     
 
       - persist_to_workspace:
           root: ~/
