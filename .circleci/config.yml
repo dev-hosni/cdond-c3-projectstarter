@@ -298,7 +298,9 @@ jobs:
              apk upgrade
              apk add curl
              apk add bash  
+             apk add sudo
              apk add --update npm
+
       - awscli-install
       - run:
           name: Install ansible
@@ -369,7 +371,7 @@ jobs:
             else
               return 1
             fi
-                        
+
       - destroy-environment
 
 
