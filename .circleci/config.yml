@@ -235,15 +235,14 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
            yum install -y tar gzip
            apt -y update && apt install -y python3
            apk add --update ansible 
-
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
