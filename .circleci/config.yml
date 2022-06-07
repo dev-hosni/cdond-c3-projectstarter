@@ -253,7 +253,7 @@ jobs:
            yum install -y tar gzip
       - node/install: 
           node-version: '13.8'
-               
+
       - attach_workspace:
           at: ~/
       - run:
@@ -280,6 +280,39 @@ jobs:
       - destroy-environment   
 
 
+
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - awscli-install
+      - add_ssh_keys:
+          fingerprints: ["be:13:2e:62:c7:6b:c4:87:19:0f:94:00:8c:c1:dc:4b"]
+      - attach_workspace:
+          at: ~/
+      - node/install: 
+          node-version: '13.8'
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Deploy backend
+          command: |
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+
+      - destroy-environment
+
+
 workflows:
   default:
     jobs:
@@ -304,3 +337,5 @@ workflows:
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]    
