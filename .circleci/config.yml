@@ -298,10 +298,9 @@ jobs:
              apk upgrade
              apk add curl
              apk add bash  
-      - node/install: 
-          node-version: '13.8'
+             apk add --update npm
       - run:
-          name: Install dependencies
+          name: Install ansible
           command: |
             apk add --update ansible
       - run:
