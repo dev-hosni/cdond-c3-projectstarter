@@ -1,4 +1,6 @@
 version: 2.1
+orbs: 
+  node: circleci/node@5.0.2
 
 commands:
   destroy-environment:
@@ -249,7 +251,9 @@ jobs:
           name: Install tar
           command: |
            yum install -y tar gzip
-           
+      - node/install: 
+          node-version: '13.8'
+               
       - attach_workspace:
           at: ~/
       - run:
