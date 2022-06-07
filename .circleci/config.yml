@@ -286,10 +286,18 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      
       - add_ssh_keys:
           fingerprints: ["be:13:2e:62:c7:6b:c4:87:19:0f:94:00:8c:c1:dc:4b"]
       - attach_workspace:
           at: ~/
+      - run:
+          name: install command dependancy
+          command: |
+             apk update
+             apk upgrade
+             apk add curl
+             apk add bash  
       - node/install: 
           node-version: '13.8'
       - run:
