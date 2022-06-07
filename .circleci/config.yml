@@ -236,11 +236,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install tar
           command: |
            yum install -y tar gzip
+      - run:
+          name: Install python
+          command: |
            apt -y update && apt install -y python3
-           apk add --update ansible 
+      - run:
+          name: Install ansible
+          command: |
+           apk add --update ansible           
       - attach_workspace:
           at: ~/
       - run:
