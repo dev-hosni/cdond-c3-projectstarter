@@ -317,12 +317,14 @@ jobs:
           name: archive build
           command: |
             tar  -czvf artifact.tar.gz backend
-            cp artifact.tar.gz  ./.circleci/ansible/roles/deploy/files/ 
+      - run:
+          name: copy archive build
+          command: |
+            cp artifact.tar.gz  ./.circleci/ansible/roles/deploy/tasks/files/ 
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
-      
+            ansible-playbook -i inventory.txt deploy-backend.yml 
       - destroy-environment
 
 
