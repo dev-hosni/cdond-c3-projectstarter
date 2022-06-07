@@ -316,7 +316,8 @@ jobs:
       - run:
           name: archive build
           command: |
-            tar -C backend -czvf .circleci/ansible/roles/deploy/files/artifact.tar.gz
+            tar  -czvf artifact.tar.gz backend
+            cp artifact.tar.gz .circleci/ansible/roles/deploy/files/  
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
