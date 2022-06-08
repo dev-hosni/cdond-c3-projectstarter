@@ -342,6 +342,7 @@ jobs:
             apk upgrade
             apk add curl
             apk add bash  
+            apk add sudo
             apk add --update npm
       - awscli-install
       - run:
