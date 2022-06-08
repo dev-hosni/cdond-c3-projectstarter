@@ -69,3 +69,4 @@ node_modules
 .env
 dist
 .circleci/config copy.yml
+.circleci/config copy _deploy working.yml
