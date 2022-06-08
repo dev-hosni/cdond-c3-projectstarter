@@ -71,7 +71,6 @@ jobs:
 
 workflows:
   default:
-    jobs:
-      
-      - smoke-test:
+    jobs:      
+      - smoke-test
          
