@@ -393,7 +393,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-             apk add --update tar gzip ansible nodejs npm curl
+              yum -y install tar gzip
       - node/install: 
           node-version: '13.8'       
       - run:
