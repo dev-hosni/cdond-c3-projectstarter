@@ -295,49 +295,44 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      
-      - add_ssh_keys:
-          fingerprints: ["be:13:2e:62:c7:6b:c4:87:19:0f:94:00:8c:c1:dc:4b"]
+      - add_ssh_keys: 
+          fingerprints: [18:ae:75:0c:8b:9e:2c:3a:c9:3a:6a:af:bc:8b:08:f7]
+
       - attach_workspace:
           at: ~/
+          
       - run:
-          name: install command dependancy
+          name: Install dependencies
           command: |
-             apk update
-             apk upgrade
-             apk add curl
-             apk add bash  
-             apk add sudo
-             apk add --update npm
-
-      - awscli-install
+            apk add --update tar gzip ansible nodejs npm curl
+            pip install awscli
+            apk add --update openssh-client
       - run:
-          name: Install ansible
+          name: Deploy backend
           command: |
-            apk add --update ansible
-      - run:
-          name: build backend
-          command: |
+            echo ENVIROMENT=production > "backend/.env"
+            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+            cat backend/.env
             cd backend
             npm i
             npm run build
-            npm audit fix --audit-level=critical --force
-            npm audit fix --force
-          #cd ..
-            
-      - run:
-          name: archive build
-          command: |
-            tar  -czvf artifact.tar.gz backend
-      - run:
-          name: copy archive build
-          command: |
-            cp artifact.tar.gz  ./.circleci/ansible/roles/deploy/tasks/files/ 
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
-            cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml 
-      - destroy-environment
+            BACKEND_IP=`cat inventory.txt | head -2 | tail -1`
+            echo "BACKEND_IP: ${BACKEND_IP}"
+            ansible-playbook -i inventory.txt deploy-backend.yml
+  
+
   
   smoke-test:
     docker:
