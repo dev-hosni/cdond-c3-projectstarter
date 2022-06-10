@@ -432,7 +432,7 @@ jobs:
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               export s3AllBucket=$(aws s3api list-buckets --query "Buckets[].Name")
-                 if [[ "${STACKS[@]}" == "s3://udapeople-${OldWorkflowID}" ]]
+                 if [[ "${STACKS[@]}" != "s3://udapeople-${OldWorkflowID}" ]]
                  then
                    aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                   fi
