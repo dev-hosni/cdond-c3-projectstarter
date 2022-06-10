@@ -431,7 +431,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Get old stack workflow id
+          name: Remove old stacks and files
           command: |
             sudo apt-get -y -qq update
             sudo apt-get -y -qq install python3
@@ -446,17 +446,7 @@ jobs:
             echo OldWorkflowID: "$OldWorkflowID"
             echo currentWorkflowID: "${CIRCLE_WORKFLOW_ID:0:7}"
             echo STACKS: "$STACKS"
-      - run:
-          name: Remove old stacks and files
-          command: |
-            echo OldWorkflowID: "$OldWorkflowID"
-            echo "${OldWorkflowID}"
-            echo "s3://udapeople-$OldWorkflowID"
-            echo backstack: "udapeople-backend-$OldWorkflowID"
-            echo frontStack:  "udapeople-frontend-$OldWorkflowID"
-            echo STACKS: "$STACKS"
-            echo currentWorkflowID: "${CIRCLE_WORKFLOW_ID:0:7}"
-            
+
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
             echo "inside first if"
