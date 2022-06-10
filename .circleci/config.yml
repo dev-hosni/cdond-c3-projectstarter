@@ -278,7 +278,7 @@ jobs:
 
             export API_URL="http://${BACK_PUBLICIP}:3030"
             echo "API_URL = ${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            echo API_URL="http://${BACK_PUBLICIP}:3030" >> frontend/.env
             cat frontend/.env
       - run:
           name: Deploy frontend objects
@@ -396,6 +396,23 @@ jobs:
               yum -y install tar gzip
       - node/install: 
           node-version: '13.8'       
+      
+      - run:
+          name: save old workflow ID
+          command: |
+             export OldWorkflowID=$(aws cloudformation list-exports \
+            --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text)
+             echo "OldWorkflowID_to be saved to the file: $OldWorkflowID"             
+             > .circleci/ansible/workflowID
+             echo $OldWorkflowID >> .circleci/ansible/workflowID 
+              tempValue=$(<workflowID)
+             echo "tempValue :$OldWorkflowID -" 
+      
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/workflowID    
       - run:
           name: Update cloudfront distribution
           command: |
@@ -410,16 +427,21 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps: 
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get old stack workflow id
           command: |
             sudo apt-get -y -qq update
             sudo apt-get -y -qq install python3
             sudo apt-get -qq install awscli
-            export OldWorkflowID=$(aws cloudformation list-exports \
-            --query "Exports[?Name==\`WorkflowID\`].Value" \
-            --no-paginate --output text)
             
+        #    export OldWorkflowID=$(aws cloudformation list-exports \
+         #   --query "Exports[?Name==\`WorkflowID\`].Value" \
+         #   --no-paginate --output text)
+
+            export OldWorkflowID=$(<workflowID)
+            echo "$OldWorkflowID" 
             export STACKS=$(aws cloudformation list-stacks \
             --query "StackSummaries[*].StackName" \
             --stack-status-filter CREATE_COMPLETE \
@@ -436,6 +458,8 @@ jobs:
                  then
                    aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                   fi
+              echo backstack: "udapeople-backend-${OldWorkflowID}"
+              echo frontStack:  "udapeople-frontend-${OldWorkflowID}"  
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
