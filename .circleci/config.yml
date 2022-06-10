@@ -431,7 +431,7 @@ jobs:
           command: |
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
-              export s3AllBucket=$(aws s3api list-buckets --query "Buckets[].Name")
+            export s3AllBucket=$(aws s3api list-buckets --query "Buckets[].Name")
                  if [[ "${STACKS[@]}" == "s3://udapeople-${OldWorkflowID}" ]]
                  then
                    aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
@@ -446,6 +446,32 @@ jobs:
 workflows:
   default:
     jobs:
-     
-      - cleanup
-          
+      - build-frontend
+      - build-backend 
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]  
