@@ -451,6 +451,7 @@ jobs:
             then
             echo "inside first if"
             export s3AllBucket=$(aws s3api list-buckets --query "Buckets[].Name")
+            echo s3AllBucket: "$s3AllBucket"
             
                  if [[ "${s3AllBucket[@]}" == "udapeople-${OldWorkflowID}" ]]
                  then
