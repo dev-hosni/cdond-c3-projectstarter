@@ -436,7 +436,8 @@ jobs:
             sudo apt-get -y -qq update
             sudo apt-get -y -qq install python3
             sudo apt-get -qq install awscli
-            export OldWorkflowID=$(<.circleci/ansible/workflowID)
+            export OldWorkflowID="b3d423d"
+
             echo OldWorkflowIDFROMFILE : "$OldWorkflowID" 
             export STACKS=$(aws cloudformation list-stacks \
             --query "StackSummaries[*].StackName" \
@@ -452,8 +453,9 @@ jobs:
             echo "inside first if"
             export s3AllBucket=$(aws s3api list-buckets --query "Buckets[].Name")
             
-                 if [[ "${STACKS[@]}" == "s3://udapeople-${OldWorkflowID}" ]]
+                 if [[ "${s3AllBucket[@]}" == "udapeople-${OldWorkflowID}" ]]
                  then
+                   echo  "inside second if"
                    aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                   fi
               aws cloudformation delete-stack --stack-name "udapeople-backend-$OldWorkflowID"
@@ -466,32 +468,5 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend 
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]  
+     
+      - cleanup
