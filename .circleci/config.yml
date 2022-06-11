@@ -194,6 +194,7 @@ jobs:
             --output text)
             echo $BACK_PUBLICIP >> .circleci/ansible/inventory.txt
             echo $BACK_PUBLICIP >> .circleci/ansible/inventory_temp.txt
+            echo backenIP : $BACK_PUBLICIP
      # - store_artifacts:
       #    path: .circleci/ansible/inventory_temp.txt
        #   destination: artifact-file     
@@ -223,7 +224,7 @@ jobs:
           command: |
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml  
-      - destroy-environment
+     # - destroy-environment
 
   run-migrations:
     docker:
