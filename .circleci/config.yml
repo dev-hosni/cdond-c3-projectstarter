@@ -212,6 +212,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["be:13:2e:62:c7:6b:c4:87:19:0f:94:00:8c:c1:dc:4b"]
+      
       - run:
           name: Install dependencies
           command: |
@@ -220,7 +221,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible
-            ansible-playbook  configure-server.yml  
+            ansible-playbook -i inventory.txt configure-server.yml  
       - destroy-environment
 
   run-migrations:
