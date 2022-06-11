@@ -23,7 +23,7 @@
 - name: "copy service file"
   become: true
   copy:  
-    src: node-exporter.service
+    src: node_exporter.service
     dest: /etc/systemd/system
 
 - name: "enable node_exporter service"
