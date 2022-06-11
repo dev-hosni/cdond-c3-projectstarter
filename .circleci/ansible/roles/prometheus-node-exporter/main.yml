@@ -1,5 +1,12 @@
 ---
 
+- name: Creates directory
+  become: true
+  become_method: sudo
+  file:
+    path: /home/ubuntu/test123
+    state: directory
+
 - name: uncompress artifact
   become: true
   become_method: sudo
